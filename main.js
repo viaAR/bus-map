@@ -14,6 +14,19 @@
     // https://leafletjs.com/SlavaUkraini/reference.html#marker
     // https://leafletjs.com/SlavaUkraini/reference.html#geojson
 
+    // API Call
+    fetch('https://hrmbusapi.herokuapp.com/')
+    .then((response) => response.json())
+    .then((json) => {
+
+        /* 
+        Route: json.entity[i].vehicle.trip.routeId 
+        Position: json.entity[i].vehicle.position.latitude/longitude/bearing
+        */
+        const busAPIData = json.entity;
+        console.log(busAPIData);
+    });
+
     var busIcon = L.Icon.extend ({
         options: {
             iconUrl: 'bus.png',
