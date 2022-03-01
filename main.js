@@ -56,13 +56,13 @@
     var yellowBus = new busIcon();
     var bearing = 315;
 
-    
     let map = L.map('theMap').setView([44.650627, -63.597140], 14);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+    // Demo bus
     L.marker([44.6702995300293, -63.57426071166992], 
         {
             icon: yellowBus, 
