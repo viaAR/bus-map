@@ -3,6 +3,7 @@
     // https://hrmbusapi.herokuapp.com/
     // https://github.com/bbecquet/Leaflet.RotatedMarker
     // https://leafletjs.com/SlavaUkraini/reference.html#marker
+    // https://leafletjs.com/SlavaUkraini/reference.html#geojson
 
     var busIcon = L.Icon.extend ({
         options: {
