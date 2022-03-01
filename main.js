@@ -25,26 +25,24 @@
         */
 
         const busAPIData = json.entity;
+        
+        // Get all busses on routes 1-10 (variations include 9A, 9B, 6C, 7A, 7B)
+        const routesOneToTen = busAPIData
+        .filter(bus => (bus.vehicle.trip.routeId.replace(/[a-zA-Z]/g, "")) <= 10);
+        
+        // Plot the busses on the map
+        console.log(routesOneToTen);
 
-        // Get all the busses on route 10
-        const routeTenBus = busAPIData
-        .filter(bus => bus.vehicle.trip.routeId === "10");
-
-        console.log(routeTenBus);
-
-        // Place the route 10 busses on the map
-        routeTenBus.forEach(bus => {
+        routesOneToTen.forEach(bus => {
             L.marker([bus.vehicle.position.latitude, bus.vehicle.position.longitude], 
                 {
                     icon: yellowBus,
                     rotationAngle: bus.vehicle.position.bearing,
                     rotationOrigin: 'center center'
                 })
-                .addTo(map);
-
-            // console.log(bus.vehicle.position.latitude + ", " + bus.vehicle.position.longitude + ", " + bus.vehicle.position.bearing);
+                .addTo(map)
+                .bindPopup(bus.vehicle.trip.routeId);
         });
-
     });
 
     var busIcon = L.Icon.extend ({
@@ -64,10 +62,6 @@
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
-
-    L.marker([44.650690, -63.596537]).addTo(map)
-        .bindPopup('Popup.')
-        .openPopup();
 
     L.marker([44.6702995300293, -63.57426071166992], 
         {
