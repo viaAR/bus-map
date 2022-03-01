@@ -1,7 +1,21 @@
-// IIFE
 (() => {
 
-    //create map in leaflet and tie it to the div called 'theMap'
+    // https://hrmbusapi.herokuapp.com/
+    // https://github.com/bbecquet/Leaflet.RotatedMarker
+    // https://leafletjs.com/SlavaUkraini/reference.html#marker
+
+    var busIcon = L.Icon.extend ({
+        options: {
+            iconUrl: 'bus.png',
+            iconSize: [40,60],
+            iconAnchor: [20, 30]
+        }
+    });
+
+    var yellowBus = new busIcon();
+    var bearing = 315;
+
+    
     let map = L.map('theMap').setView([44.650627, -63.597140], 14);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -9,8 +23,16 @@
         }).addTo(map);
 
     L.marker([44.650690, -63.596537]).addTo(map)
-        .bindPopup('This is a sample popup. You can put any html structure in this including extra bus data. You can also swap this icon out for a custom icon. A png file has been provided for you to use if you wish.')
+        .bindPopup('Popup.')
         .openPopup();
+
+    L.marker([44.6702995300293, -63.57426071166992], 
+        {
+            icon: yellowBus, 
+            rotationAngle: bearing, 
+            rotationOrigin: 'center center'
+        })
+        .addTo(map);
 
 
 })()
