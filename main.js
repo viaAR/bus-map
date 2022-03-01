@@ -19,33 +19,14 @@
     .then((response) => response.json())
     .then((json) => {
 
-        /* 
-        Route: json.entity[i].vehicle.trip.routeId 
-        Position: json.entity[i].vehicle.position.latitude/longitude/bearing
-        */
-
+        // Hold the raw data from the HRM API
         const busAPIData = json.entity;
         
-        const geojsonLayer = L.geoJSON().addTo(map);
-        
-        // Get all busses on routes 1-10 (variations include 9A, 9B, 6C, 7A, 7B)
+        // Filter the raw data for all busses on routes 1-10 (variations include 9A, 9B, 6C, 7A, 7B)
         const rawRoutesOneToTen = busAPIData
         .filter(bus => (bus.vehicle.trip.routeId.replace(/[a-zA-Z]/g, "")) <= 10);
         
-        // Plot the busses on the map
-        console.log(rawRoutesOneToTen);
-
-        // rawRoutesOneToTen.forEach(bus => {
-        //     L.marker([bus.vehicle.position.latitude, bus.vehicle.position.longitude], 
-        //         {
-        //             icon: yellowBus,
-        //             rotationAngle: bus.vehicle.position.bearing,
-        //             rotationOrigin: 'center center'
-        //         })
-        //         .addTo(map)
-        //         .bindPopup(bus.vehicle.trip.routeId);
-        // });
-
+        // Store the geojson formated features
         const geojsonArray = [];
 
         // Create the geoJSON features
@@ -67,18 +48,24 @@
 
             // Add the feature to the array
             geojsonArray.push(geojsonFeature);
+        });
 
-            // Add the feature to the map
-            // geojsonLayer.addData(geojsonFeature);
-
-            // Change the default marker to a bus and add to the map
+        // Add the feature to the map
+        geojsonArray.forEach(geojsonFeature => {
+            
             L.geoJSON(geojsonFeature, {
                 pointToLayer: function (feature, latlng) {
-                    return L.marker(latlng, {icon: yellowBus, rotationAngle: feature.properties.bearing, rotationOrigin: 'center center'});
+
+                    // Change the default marker to a bus and add to the map
+                    return L.marker(latlng, {
+                        icon: yellowBus, 
+                        rotationAngle: feature.properties.bearing, 
+                        rotationOrigin: 'center center'
+                    });
                 }
             })
             .addTo(map);
-        })
+        });
 
         console.log(geojsonArray);
 
@@ -89,11 +76,20 @@
                 var myLayer = L.geoJSON().addTo(map)
             Add to it as geoJSON features are created from the API data
                 myLayer.addData(geojsonFeature);
+            
+            rawRoutesOneToTen.forEach(bus => {
+                bus.vehicle.position.latitude, bus.vehicle.position.longitude], 
+                {
+                    icon: yellowBus,
+                    rotationAngle: bus.vehicle.position.bearing,
+                    rotationOrigin: 'center center'
+                })
+                .addTo(map)
+                .bindPopup(bus.vehicle.trip.routeId);
+            });
 
         */
-        
-
-        
+                
     });
 
     var busIcon = L.Icon.extend ({
