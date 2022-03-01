@@ -1,5 +1,14 @@
 (() => {
 
+    /*
+        TODO: 
+        query the hrmbus api,
+        find methods to convert that data to geoJSON,
+        create multiple busIcon objects for each of the busses on the 1-10 route,
+        place multiple bus markers with the rotatedmarker features for rotation,
+        update the map to get the new bus positions
+    */ 
+
     // https://hrmbusapi.herokuapp.com/
     // https://github.com/bbecquet/Leaflet.RotatedMarker
     // https://leafletjs.com/SlavaUkraini/reference.html#marker
