@@ -27,13 +27,13 @@
         const busAPIData = json.entity;
         
         // Get all busses on routes 1-10 (variations include 9A, 9B, 6C, 7A, 7B)
-        const routesOneToTen = busAPIData
+        const rawRoutesOneToTen = busAPIData
         .filter(bus => (bus.vehicle.trip.routeId.replace(/[a-zA-Z]/g, "")) <= 10);
         
         // Plot the busses on the map
-        console.log(routesOneToTen);
+        console.log(rawRoutesOneToTen);
 
-        routesOneToTen.forEach(bus => {
+        rawRoutesOneToTen.forEach(bus => {
             L.marker([bus.vehicle.position.latitude, bus.vehicle.position.longitude], 
                 {
                     icon: yellowBus,
@@ -43,6 +43,33 @@
                 .addTo(map)
                 .bindPopup(bus.vehicle.trip.routeId);
         });
+
+        // Transform raw data to geoJSON format
+        var routesGeojsonFeature = {
+            "type": "Feature",
+            "properties": {
+                "name": bus.vehicle.trip.routeId,
+                "amenity": "HRM Bus",
+                "popupContent": "Route " + bus.vehicle.trip.routeId
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-104.99404, 39.75621]
+            }
+        };
+
+        /*
+            Marker accepts coordinants as latlng - geoJSON accpets coordinants as lnglat
+
+            Create an empty geoJSON layer
+                var myLayer = L.geoJSON().addTo(map)
+            Add to it as geoJSON features are created from the API data
+                myLayer.addData(geojsonFeature);
+
+        */
+        
+
+        
     });
 
     var busIcon = L.Icon.extend ({
