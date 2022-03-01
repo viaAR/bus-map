@@ -32,6 +32,19 @@
 
         console.log(routeTenBus);
 
+        // Place the route 10 busses on the map
+        routeTenBus.forEach(bus => {
+            L.marker([bus.vehicle.position.latitude, bus.vehicle.position.longitude], 
+                {
+                    icon: yellowBus,
+                    rotationAngle: bus.vehicle.position.bearing,
+                    rotationOrigin: 'center center'
+                })
+                .addTo(map);
+
+            // console.log(bus.vehicle.position.latitude + ", " + bus.vehicle.position.longitude + ", " + bus.vehicle.position.bearing);
+        });
+
     });
 
     var busIcon = L.Icon.extend ({
