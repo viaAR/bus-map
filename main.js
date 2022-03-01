@@ -26,6 +26,8 @@
 
         const busAPIData = json.entity;
         
+        const geojsonLayer = L.geoJSON().addTo(map);
+        
         // Get all busses on routes 1-10 (variations include 9A, 9B, 6C, 7A, 7B)
         const rawRoutesOneToTen = busAPIData
         .filter(bus => (bus.vehicle.trip.routeId.replace(/[a-zA-Z]/g, "")) <= 10);
@@ -44,19 +46,30 @@
                 .bindPopup(bus.vehicle.trip.routeId);
         });
 
-        // Transform raw data to geoJSON format
-        var routesGeojsonFeature = {
-            "type": "Feature",
-            "properties": {
-                "name": bus.vehicle.trip.routeId,
-                "amenity": "HRM Bus",
-                "popupContent": "Route " + bus.vehicle.trip.routeId
-            },
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-104.99404, 39.75621]
-            }
-        };
+        const geojsonArray = [];
+
+        // Create the geoJSON features
+        rawRoutesOneToTen.forEach(bus => {
+
+            // Transform raw data to geoJSON format
+            var geojsonFeature = {
+                "type": "Feature",
+                "properties": {
+                    "name": bus.vehicle.trip.routeId,
+                    "amenity": "HRM Bus",
+                    "popupContent": "Route " + bus.vehicle.trip.routeId
+                },
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [bus.vehicle.position.longitude, bus.vehicle.position.latitude]
+                }
+            };
+
+            // Add the feature to the array
+            geojsonArray.push(geojsonFeature);
+        })
+
+        console.log(geojsonArray);
 
         /*
             Marker accepts coordinants as latlng - geoJSON accpets coordinants as lnglat
