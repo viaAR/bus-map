@@ -35,16 +35,16 @@
         // Plot the busses on the map
         console.log(rawRoutesOneToTen);
 
-        rawRoutesOneToTen.forEach(bus => {
-            L.marker([bus.vehicle.position.latitude, bus.vehicle.position.longitude], 
-                {
-                    icon: yellowBus,
-                    rotationAngle: bus.vehicle.position.bearing,
-                    rotationOrigin: 'center center'
-                })
-                .addTo(map)
-                .bindPopup(bus.vehicle.trip.routeId);
-        });
+        // rawRoutesOneToTen.forEach(bus => {
+        //     L.marker([bus.vehicle.position.latitude, bus.vehicle.position.longitude], 
+        //         {
+        //             icon: yellowBus,
+        //             rotationAngle: bus.vehicle.position.bearing,
+        //             rotationOrigin: 'center center'
+        //         })
+        //         .addTo(map)
+        //         .bindPopup(bus.vehicle.trip.routeId);
+        // });
 
         const geojsonArray = [];
 
@@ -56,7 +56,7 @@
                 "type": "Feature",
                 "properties": {
                     "name": bus.vehicle.trip.routeId,
-                    "amenity": "HRM Bus",
+                    "bearing": bus.vehicle.position.bearing,
                     "popupContent": "Route " + bus.vehicle.trip.routeId
                 },
                 "geometry": {
@@ -67,6 +67,17 @@
 
             // Add the feature to the array
             geojsonArray.push(geojsonFeature);
+
+            // Add the feature to the map
+            // geojsonLayer.addData(geojsonFeature);
+
+            // Change the default marker to a bus and add to the map
+            L.geoJSON(geojsonFeature, {
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {icon: yellowBus, rotationAngle: feature.properties.bearing, rotationOrigin: 'center center'});
+                }
+            })
+            .addTo(map);
         })
 
         console.log(geojsonArray);
