@@ -23,8 +23,15 @@
         Route: json.entity[i].vehicle.trip.routeId 
         Position: json.entity[i].vehicle.position.latitude/longitude/bearing
         */
+
         const busAPIData = json.entity;
-        console.log(busAPIData);
+
+        // Get all the busses on route 10
+        const routeTenBus = busAPIData
+        .filter(bus => bus.vehicle.trip.routeId === "10");
+
+        console.log(routeTenBus);
+
     });
 
     var busIcon = L.Icon.extend ({
