@@ -2,7 +2,8 @@
 
     /*
         TODO: 
-        update the map to get the new bus positions
+        update the map to get the new bus positions, - setInterval()
+        clean up the code so that the api call is its own method
     */ 
 
     var busAPIData = null;
@@ -72,6 +73,13 @@
 
         console.log(geojsonArray);     
     });
+
+    /*
+        Use the method of setLatLng as a way of updating the new positions of the busses
+
+        This means that we are going to have to store a template of our marker in a variable
+    */
+    
 
     let map = L.map('theMap').setView([44.650627, -63.597140], 14);
 
