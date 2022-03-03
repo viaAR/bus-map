@@ -6,8 +6,8 @@
         clean up the code so that the api call is its own method
     */ 
 
-    var busAPIData = null;
-    const geojsonArray = [];
+    // var busAPIData = null;
+    // const geojsonArray = [];
 
     // Create an icon for the bus
     var busIcon = L.Icon.extend ({
@@ -21,58 +21,58 @@
     var yellowBus = new busIcon();
 
     // API Call
-    fetch('https://hrmbusapi.herokuapp.com/')
-    .then((response) => response.json())
-    .then((json) => {
+    // fetch('https://hrmbusapi.herokuapp.com/')
+    // .then((response) => response.json())
+    // .then((json) => {
 
-        // Hold the raw data from the HRM API
-        busAPIData = json.entity;
+    //     // Hold the raw data from the HRM API
+    //     busAPIData = json.entity;
         
-        // Filter the raw data for all busses on routes 1-10 (variations include 9A, 9B, 6C, 7A, 7B)
-        const rawRoutesOneToTen = busAPIData
-        .filter(bus => (bus.vehicle.trip.routeId.replace(/[a-zA-Z]/g, "")) <= 10);
+    //     // Filter the raw data for all busses on routes 1-10 (variations include 9A, 9B, 6C, 7A, 7B)
+    //     const rawRoutesOneToTen = busAPIData
+    //     .filter(bus => (bus.vehicle.trip.routeId.replace(/[a-zA-Z]/g, "")) <= 10);
 
-        // Create the geoJSON features
-        rawRoutesOneToTen.forEach(bus => {
+    //     // Create the geoJSON features
+    //     rawRoutesOneToTen.forEach(bus => {
 
-            // Transform raw data to geoJSON format
-            var geojsonFeature = {
-                "type": "Feature",
-                "properties": {
-                    "name": bus.vehicle.trip.routeId,
-                    "bearing": bus.vehicle.position.bearing,
-                    "popupContent": "Route " + bus.vehicle.trip.routeId
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [bus.vehicle.position.longitude, bus.vehicle.position.latitude]
-                }
-            };
+    //         // Transform raw data to geoJSON format
+    //         var geojsonFeature = {
+    //             "type": "Feature",
+    //             "properties": {
+    //                 "name": bus.vehicle.trip.routeId,
+    //                 "bearing": bus.vehicle.position.bearing,
+    //                 "popupContent": "Route " + bus.vehicle.trip.routeId
+    //             },
+    //             "geometry": {
+    //                 "type": "Point",
+    //                 "coordinates": [bus.vehicle.position.longitude, bus.vehicle.position.latitude]
+    //             }
+    //         };
 
-            // Add the feature to the array
-            geojsonArray.push(geojsonFeature);
-        });
+    //         // Add the feature to the array
+    //         geojsonArray.push(geojsonFeature);
+    //     });
 
-        // Add the feature to the map
-        geojsonArray.forEach(geojsonFeature => {
+    //     // Add the feature to the map
+    //     geojsonArray.forEach(geojsonFeature => {
             
-            L.geoJSON(geojsonFeature, {
-                pointToLayer: function (feature, latlng) {
+    //         L.geoJSON(geojsonFeature, {
+    //             pointToLayer: function (feature, latlng) {
 
-                    // Change the default marker to a bus and add to the map
-                    return L.marker(latlng, {
-                        icon: yellowBus, 
-                        rotationAngle: feature.properties.bearing, 
-                        rotationOrigin: 'center center'
-                    });
-                }
-            })
-            .addTo(map)
-            .bindPopup(geojsonFeature.properties.popupContent);
-        });
+    //                 // Change the default marker to a bus and add to the map
+    //                 return L.marker(latlng, {
+    //                     icon: yellowBus, 
+    //                     rotationAngle: feature.properties.bearing, 
+    //                     rotationOrigin: 'center center'
+    //                 });
+    //             }
+    //         })
+    //         .addTo(map)
+    //         .bindPopup(geojsonFeature.properties.popupContent);
+    //     });
 
-        console.log(geojsonArray);     
-    });
+    //     console.log(geojsonArray);     
+    // });
 
     /*
         Use the method of setLatLng as a way of updating the new positions of the busses
@@ -80,6 +80,76 @@
         This means that we are going to have to store a template of our marker in a variable
     */
     
+    const apiUrl = 'https://hrmbusapi.herokuapp.com/';
+    let rawApiData = null;
+    const geojsonArray = [];
+    let geoJsonMap = null;
+    
+    async function getBusses() {
+        fetch(apiUrl)
+        .then((response) => response.json())
+        .then(json => {
+
+            // Clear the previous layer
+            if (geojsonArray.length != 0) {
+
+            }
+
+            // Hold the raw data from the HRM API
+            rawApiData = json.entity;
+
+            // Filter the raw data for all busses on routes 1-10 (variations include 9A, 9B, 6C, 7A, 7B)
+            const rawRoutesOneToTen = rawApiData
+            .filter(bus => (bus.vehicle.trip.routeId.replace(/[a-zA-Z]/g, "")) <= 10);
+
+            // Create the geoJSON features
+            rawRoutesOneToTen.forEach(bus => {
+
+                // Transform raw data to geoJSON format
+                var geojsonFeature = {
+                    "type": "Feature",
+                    "properties": {
+                        "name": bus.vehicle.trip.routeId,
+                        "bearing": bus.vehicle.position.bearing,
+                        "popupContent": "Route " + bus.vehicle.trip.routeId
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [bus.vehicle.position.longitude, bus.vehicle.position.latitude]
+                    }
+                };
+
+                // Add the feature to the array
+                geojsonArray.push(geojsonFeature);
+            });
+
+            // Add the feature to the map
+            geojsonArray.forEach(geojsonFeature => {
+                
+                geoJsonMap = L.geoJSON(geojsonFeature, {
+                    pointToLayer: function (feature, latlng) {
+
+                        // Change the default marker to a bus and add to the map
+                        return L.marker(latlng, {
+                            icon: yellowBus, 
+                            rotationAngle: feature.properties.bearing, 
+                            rotationOrigin: 'center center'
+                        });
+                    }
+                })
+                .addTo(map)
+                .bindPopup(geojsonFeature.properties.popupContent);
+            });
+
+            console.log(geojsonArray);     
+        });
+    };
+
+    // Call the function on page load
+    getBusses();
+
+    // Refresh the data to update locations
+    // setInterval(getBusses, 5000);
 
     let map = L.map('theMap').setView([44.650627, -63.597140], 14);
 
