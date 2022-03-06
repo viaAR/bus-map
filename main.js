@@ -52,7 +52,7 @@
 
             addGeoJsonLayersToMap(geojsonFeatureArray);
 
-            console.log(geojsonFeatureArray);     
+            console.log(geojsonFeatureArray);
         });
     };
 
